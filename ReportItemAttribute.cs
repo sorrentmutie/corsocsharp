@@ -13,3 +13,4 @@ public class ReportItemAttribute : Attribute
     public string? Units { get; set; }
     public string? Heading { get; set; }
 }
+
