@@ -35,10 +35,15 @@ public class CSVGenerator<T>
     private string CreateHeader()
     {
         var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        var orderedProperties = properties.OrderBy(p => p.GetCustomAttribute<ReportItemAttribute>()?.ColumnOrder);
+
+
         var header = new StringBuilder();
-        foreach (var property in properties)
+        foreach (var property in orderedProperties)
         {
-            header.Append(property.Name).Append(";");
+            var attr = property.GetCustomAttribute<ReportItemAttribute>();
+            header.Append( attr?.Heading ?? property.Name).Append(";");
         }
 
 
@@ -48,14 +53,19 @@ public class CSVGenerator<T>
     private string CreateRow(T item)
     {
         var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        var orderedProperties = properties.OrderBy(p => p.GetCustomAttribute<ReportItemAttribute>()?.ColumnOrder);
+
+
         var book = new StringBuilder();
 
         foreach (var prop in properties)
         {
            var x = (dynamic?)prop.GetValue(item);
 
-            book.Append(
-                CreateItem((dynamic?)prop.GetValue(item))).Append(";");
+            // book.Append(
+            //    CreateItem((dynamic?)prop.GetValue(item))).Append(";");
+            book.Append(CreateItem(prop, item)).Append(";");
         }
 
 
@@ -63,9 +73,17 @@ public class CSVGenerator<T>
     }
 
 
-    private string? CreateItem(object item) => item.ToString();
-    private string CreateItem(DateTime item) => item.ToShortDateString();
+   // private string? CreateItem(object item) => item.ToString();
+   // private string CreateItem(DateTime item) => item.ToShortDateString();
 
+    private string CreateItem(PropertyInfo prop, T item)
+    {
+        var attr = prop.GetCustomAttribute<ReportItemAttribute>();
+
+        return string.Format($"{{0:{attr?.Format}}} {attr?.Units}", prop.GetValue(item));
+
+
+    }
 
 
 }
