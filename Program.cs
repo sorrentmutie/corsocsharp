@@ -1,54 +1,96 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.ComponentModel.Design;
-using System.Reflection;
+﻿
 
-Console.WriteLine("Hello, World!");
 
-var assembly = Assembly.LoadFrom("E:\\corsi\\csharp\\MiaLibreria\\bin\\Debug\\net7.0\\MiaLibreria.dll");
 
-foreach( var type in assembly.GetExportedTypes())
+void PlotSin(double x0, double x1, double dx)
 {
-    Console.WriteLine($"Type: {type.Name}");
-
-    var instance = Activator.CreateInstance(type);  
-
-
-    Console.WriteLine("============");
-    foreach(var field in  type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-    {
-        Console.WriteLine($"Field: {field.Name}");
-        field.SetValue(instance, "Mario Rossi");
-    }
-    Console.WriteLine("Methods ==========");
-
-    foreach( var method in 
-        type.GetMethods()
-        .Where(m => !m.IsSpecialName && !m.IsVirtual))
-    {
-        Console.WriteLine($"Method: {method.Name}");
-
-        if (method.GetParameters().Length > 0)
-        {
-            method.Invoke(instance, new[] { "Luigi Bianchi" });
-        }
-        else if(method.ReturnType.Name != "Void" && method.ReturnType.Name != "Type") 
-        {
-            var returnedValue = method.Invoke(instance, null);
-            Console.WriteLine( $"Returned Value: {returnedValue}");
-        }
-        
-        else
-        {
-            method.Invoke(instance, null);
-        } 
-
-    }
-    Console.WriteLine("Properties ============");
-    foreach ( var property in type.GetProperties())
-    {
-        Console.WriteLine($"{property.Name}");
-        var propertyValue = property.GetValue(instance);
-        Console.WriteLine($"Property Value: {propertyValue}");
+	for (double x = x0; x < x1; x +=dx) 
+	{
+		double y = Math.Sin(x);
+        Console.WriteLine($"x: {x}, {y:N2}");
     }
 
 }
+
+void PlotSinEnhanced(MathsFunction f, double x0, double x1, double dx)
+{
+    for (double x = x0; x < x1; x += dx)
+    {
+        double y =f(x);
+        Console.WriteLine($"x: {x}, {y:N2}");
+    }
+}
+
+double Double( double x)
+{
+    return x * 2;
+}
+
+double Triple(double x)
+{
+    return x * 3;
+}
+
+// PlotSin(0.0, Math.PI / 2, 0.01);
+
+// PlotSinEnhanced(Math.Cos, 0.0, Math.PI / 2, 0.01);
+
+//PlotSinEnhanced(Double, 0.0, Math.PI / 2, 0.01);
+
+var randomGenerator = new Random();
+
+for (int i = 0; i < 100; i++)
+{
+    MathsFunction f = Triple;
+    if (randomGenerator.NextDouble() > 0.5)
+    {
+        f += Double;
+    } else
+    {
+        f = Triple;
+    }
+    double result = f(2);
+    Console.WriteLine($"result: {result}");
+
+}
+
+void PlotSuperEnhanced(Func<double, double> f, double x0, double x1, double dx)
+{
+    for (double x = x0; x < x1; x += dx)
+    {
+        double y = f(x);
+        Console.WriteLine($"x: {x}, {y:N2}");
+    }
+}
+
+
+var lista = new List<int>();
+for (int i = 0; i < 1000; i++)
+{
+    lista.Add(i);
+}
+
+
+//var numeriPari = lista.FindAll( delegate(int n) { return n % 2 == 0; });
+var numeriPari = lista.FindAll(n => n % 2 == 0);
+
+
+numeriPari.ForEach(Console.WriteLine);
+
+
+
+
+// PlotSuperEnhanced(Double, 0, 10, 0.1);
+//Action<int> g;
+
+delegate double MathsFunction(double x);
+delegate int D1(double a, string b);
+// Func<double, string, int>,
+
+
+
+
+
+
+
+
