@@ -77,6 +77,13 @@ using DemoCorsoCSharp;
 
 
 var listaPersone = new List<Person>();
+
+
+
+
+var x = listaPersone.DoSomething(s => s.ToLower(), s => s.ToUpper(), "A");
+
+
 var skip = 10;
 var take = 5;
 
