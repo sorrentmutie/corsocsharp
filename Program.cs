@@ -4,7 +4,7 @@ using System.Reflection;
 
 Console.WriteLine("Hello, World!");
 
-var assembly = Assembly.LoadFrom("E:\\corsi\\csharp\\MiaLibreria\\bin\\Debug\\net7.0\\MiaLibreria.dll");
+var assembly = Assembly.LoadFrom("E:\\corsi\\csharp\\corsocsharp\\MiaLibreria\\bin\\Debug\\net7.0\\MiaLibreria.dll");
 
 foreach( var type in assembly.GetExportedTypes())
 {
